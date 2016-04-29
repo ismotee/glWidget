@@ -215,17 +215,8 @@ void GLWidget::initializeGL()
 
     setData(obj);
     // Store the vertex attribute bindings for the program.
-    //setupVertexAttribs();
-    vertexBuffer.bind();
+    setupVertexAttribs();
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    vertexBuffer.release();
-
-    normalBuffer.bind();
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    normalBuffer.release();
 
     // Light position is fixed.
     m_program->setUniformValue(lightId, QVector3D(11, 6, 11));
@@ -235,8 +226,17 @@ void GLWidget::initializeGL()
 
 void GLWidget::setupVertexAttribs()
 {
-   // QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    vertexBuffer.bind();
 
+    f->glEnableVertexAttribArray(0);
+    f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    vertexBuffer.release();
+
+    normalBuffer.bind();
+    f->glEnableVertexAttribArray(1);
+    f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    normalBuffer.release();
 }
 
 void GLWidget::paintGL()
