@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     logo.cpp \
     window.cpp \
     shader.cpp \
-    dobject.cpp
+    dobject.cpp \
+    oLoader.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     shader.hpp \
     dClock.h \
     dFace.h \
-    dobject.h
+    dobject.h \
+    oLoader.h
 
 FORMS    += mainwindow.ui
 
