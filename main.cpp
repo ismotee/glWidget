@@ -44,6 +44,12 @@
 
 #include "mainwindow.h"
 
+unsigned int createID() {
+    static n = 0;
+    return n++;
+}
+
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
