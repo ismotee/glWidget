@@ -10,7 +10,6 @@ dFacesConnected::dFacesConnected(){}
 
 dFacesConnected::dFacesConnected(unsigned int vertexId,
 	std::vector<unsigned int> elements,
-	std::vector<dFace>& faces,
 	std::vector<glm::vec3> normals) {
 	
 	// get references from faces by elements and vertexId
@@ -31,6 +30,8 @@ glm::vec3 dFacesConnected::calculateVertexNormal(std::vector<dFace>& allFaces) {
 	return glm::normalize(sum);
 }
 
+
+oRawDataT::oRawDataT() : length(0), data(NULL) {}
 
 
 dObject::dObject(std::string path)
@@ -181,5 +182,26 @@ void dObject::sortElementsByDistance() {
 	}
 
 	std::cout << "ok (" << t.get() << " s)\n";
+}
 
+
+oRawDataT dObject::getVertexData() {
+    oRawDataT result;
+    result.length = vertices.size() * sizeof(glm::vec3);
+    result.data = (void*) &vertices[0];
+    return result;
+}
+
+oRawDataT dObject::getNormalData() {
+    oRawDataT result;
+    result.length = normals.size() * sizeof(glm::vec3);
+    result.data = (void*) &normals[0];
+    return result;
+}
+
+oRawDataT dObject::getElementData() {
+	oRawDataT result;
+	result.length = elements.size() * sizeof(unsigned int);
+	result.data = (void*) &elements[0];
+	return result;
 }
