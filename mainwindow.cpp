@@ -47,7 +47,8 @@
 
 MainWindow::MainWindow(): obj(QCoreApplication::applicationDirPath().toStdString() + "/olento_testi.obj")
 {
-
+    for(int i = 0; i < 100; i++)
+        std::cout << obj.elements[i] << ", ";
 
     QMenuBar *menuBar = new QMenuBar;
     QMenu *menuWindow = menuBar->addMenu(tr("&Window"));

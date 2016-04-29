@@ -45,7 +45,7 @@
 #include "mainwindow.h"
 
 unsigned int createID() {
-    static n = 0;
+    static int n = 0;
     return n++;
 }
 
