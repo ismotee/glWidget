@@ -28,7 +28,6 @@ public:
 
 	dFacesConnected(unsigned int vertexId,
 		std::vector<unsigned int> elements,
-		std::vector<dFace>& faces,
 		std::vector<glm::vec3> normals);
    
 	glm::vec3 calculateVertexNormal(std::vector<dFace>& allFaces);
@@ -45,6 +44,14 @@ public:
 //                                                                                          //
 //==========================================================================================//
 
+struct oRawDataT{
+    int length;
+    void* data;
+
+    oRawDataT();
+};
+
+
 class dObject : public oLoader {
 public:
     dObject(std::string path);
@@ -52,7 +59,11 @@ public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     std::vector<unsigned int> elements;
-    
+        
+    oRawDataT getVertexData();
+    oRawDataT getNormalData();
+	oRawDataT getElementData();
+
 	std::vector<dFace> faces;
 	std::vector<glm::vec3> facePositions;
 
@@ -70,8 +81,8 @@ private:
     void makeFaces();
     void makeFacesConnected();
 
-	glm::vec3 cameraPosition;           //t‰m‰ on l‰pin‰kyvyytt‰ varten
-	bool faceIsCloser(int a, int b); //palauta tosi jos a on l‰hemp‰n‰ kameraa kuin b
+	glm::vec3 cameraPosition;           //t√§m√§ on l√§pin√§kyvyytt√§ varten
+	bool faceIsCloser(int a, int b); //palauta tosi jos a on l√§hemp√§n√§ kameraa kuin b
 
 };
 
