@@ -16,11 +16,21 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
     logo.cpp \
-    window.cpp
+    window.cpp \
+    shader.cpp \
+    dobject.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
     logo.h \
-    window.h
+    window.h \
+    shader.hpp \
+    dClock.h \
+    dFace.h \
+    dobject.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    StandardShading.fragmentshader \
+    StandardShading.vertexshader

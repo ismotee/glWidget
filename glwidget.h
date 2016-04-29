@@ -91,13 +91,15 @@ private:
     QOpenGLVertexArrayObject m_vao;
     QOpenGLBuffer m_logoVbo;
     QOpenGLShaderProgram *m_program;
-    int m_projMatrixLoc;
-    int m_mvMatrixLoc;
-    int m_normalMatrixLoc;
-    int m_lightPosLoc;
-    QMatrix4x4 m_proj;
-    QMatrix4x4 m_camera;
-    QMatrix4x4 m_world;
+    float aspectRatio;
+    int mvpId;
+    int projId;
+    int viewId;
+    int modelId;
+    int lightId;
+    QMatrix4x4 proj;
+    QMatrix4x4 view;
+    QMatrix4x4 model;
     bool m_transparent;
 };
 

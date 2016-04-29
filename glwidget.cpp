@@ -43,6 +43,8 @@
 #include <QOpenGLShaderProgram>
 #include <QCoreApplication>
 #include <math.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 GLWidget::GLWidget(QWidget *parent)
     : QOpenGLWidget(parent),
@@ -194,17 +196,41 @@ void GLWidget::initializeGL()
     glClearColor(0, 0, 0, m_transparent ? 0 : 1);
 
     m_program = new QOpenGLShaderProgram;
-    m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, m_core ? vertexShaderSourceCore : vertexShaderSource);
-    m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, m_core ? fragmentShaderSourceCore : fragmentShaderSource);
-    m_program->bindAttributeLocation("vertex", 0);
-    m_program->bindAttributeLocation("normal", 1);
+
+    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, QCoreApplication::applicationDirPath() + "/StandardShading.vertexshader");
+    m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, QCoreApplication::applicationDirPath() + "/StandardShading.fragmentshader");
+
+    m_program->bindAttributeLocation("vertexPosition_modelspace", 0);
+    m_program->bindAttributeLocation("vertexNormal_modelspace", 1);
+
     m_program->link();
 
     m_program->bind();
-    m_projMatrixLoc = m_program->uniformLocation("projMatrix");
-    m_mvMatrixLoc = m_program->uniformLocation("mvMatrix");
-    m_normalMatrixLoc = m_program->uniformLocation("normalMatrix");
-    m_lightPosLoc = m_program->uniformLocation("lightPos");
+    mvpId = m_program->uniformLocation("MVP");
+    viewId = m_program->uniformLocation("V");
+    modelId = m_program->uniformLocation("M");
+    lightId = m_program->uniformLocation("LightPosition_worldspace");
+
+    // aspect ratio
+    aspectRatio = 4/3;
+
+    //lasketaan projekti matriisi
+    proj.perspective(45.0f, aspectRatio, 0.1f, 100.0f);
+
+
+    // set view matrix
+    QVector3D position(8,3,3);
+    QVector3D target(0,0,0);
+    QVector3D up(0,1,0);
+
+    // feed matrix.
+    view.lookAt(
+                position,
+                target,
+                up
+                );
+
+    model = QMatrix4x4();
 
     // Create a vertex array object. In OpenGL ES 2.0 and OpenGL 2.x
     // implementations this is optional and support may not be present
@@ -221,12 +247,9 @@ void GLWidget::initializeGL()
     // Store the vertex attribute bindings for the program.
     setupVertexAttribs();
 
-    // Our camera never changes in this example.
-    m_camera.setToIdentity();
-    m_camera.translate(0, 0, -1);
 
     // Light position is fixed.
-    m_program->setUniformValue(m_lightPosLoc, QVector3D(0, 0, 70));
+    m_program->setUniformValue(lightId, QVector3D(11, 6, 11));
 
     m_program->release();
 }
@@ -248,17 +271,19 @@ void GLWidget::paintGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
+    /*
     m_world.setToIdentity();
     m_world.rotate(180.0f - (m_xRot / 16.0f), 1, 0, 0);
     m_world.rotate(m_yRot / 16.0f, 0, 1, 0);
     m_world.rotate(m_zRot / 16.0f, 0, 0, 1);
+*/
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
     m_program->bind();
-    m_program->setUniformValue(m_projMatrixLoc, m_proj);
-    m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
-    QMatrix3x3 normalMatrix = m_world.normalMatrix();
-    m_program->setUniformValue(m_normalMatrixLoc, normalMatrix);
+    m_program->setUniformValue(modelId, model);
+    m_program->setUniformValue(viewId, view);
+    m_program->setUniformValue(projId, proj);
+    m_program->setUniformValue(mvpId, proj * view * QMatrix4x4()); // matrix default constructor represents model matrix
 
     glDrawArrays(GL_TRIANGLES, 0, m_logo.vertexCount());
 
@@ -267,8 +292,7 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int w, int h)
 {
-    m_proj.setToIdentity();
-    m_proj.perspective(45.0f, GLfloat(w) / h, 0.01f, 100.0f);
+    proj.perspective(45.0f, GLfloat(w) / h, 0.01f, 100.0f);
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
