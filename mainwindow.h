@@ -42,7 +42,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "dobject.h"
 
 class MainWindow : public QMainWindow
 {

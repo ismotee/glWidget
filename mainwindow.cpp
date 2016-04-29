@@ -44,10 +44,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QCoreApplication>
+#include <iostream>
 
 MainWindow::MainWindow()
 {
-
+    std::cout << "MainWindow constructor ...";
     QMenuBar *menuBar = new QMenuBar;
     QMenu *menuWindow = menuBar->addMenu(tr("&Window"));
     QAction *addNew = new QAction(menuWindow);
@@ -57,6 +58,8 @@ MainWindow::MainWindow()
     setMenuBar(menuBar);
 
     onAddNew();
+
+    std::cout << "ok\n";
 }
 
 void MainWindow::onAddNew()

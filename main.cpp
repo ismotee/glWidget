@@ -43,6 +43,7 @@
 #include <QSurfaceFormat>
 
 #include "mainwindow.h"
+#include <iostream>
 
 unsigned int createID() {
     static int n = 0;
@@ -52,7 +53,12 @@ unsigned int createID() {
 
 int main(int argc, char *argv[])
 {
+    std::cout << "create application... \n";
     QApplication app(argc, argv);
+
+    std::cout << "ok\n";
+
+    std::cout << "setup gl ... ";
 
     QSurfaceFormat fmt;
     fmt.setDepthBufferSize(24);
@@ -64,20 +70,24 @@ int main(int argc, char *argv[])
 
     QSurfaceFormat::setDefaultFormat(fmt);
 
-    MainWindow mainWindow;
+    std::cout << "ok\n";
+
+    MainWindow mainWindow; 
+
     if (QCoreApplication::arguments().contains(QStringLiteral("--transparent"))) {
         mainWindow.setAttribute(Qt::WA_TranslucentBackground);
         mainWindow.setAttribute(Qt::WA_NoSystemBackground, false);
     }
-  /*
+
     mainWindow.resize(mainWindow.sizeHint());
     int desktopArea = QApplication::desktop()->width() *
                      QApplication::desktop()->height();
     int widgetArea = mainWindow.width() * mainWindow.height();
     if (((float)widgetArea / (float)desktopArea) < 0.75f)
-    */
+
         mainWindow.show();
     //else
         mainWindow.showMaximized();
     return app.exec();
+
 }

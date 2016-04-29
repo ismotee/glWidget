@@ -102,11 +102,17 @@ private:
     dObject obj;
 
     float aspectRatio;
-    int mvpId;
-    int projId;
-    int viewId;
-    int modelId;
-    int lightId;
+    GLuint mvpId;
+    GLuint projId;
+    GLuint viewId;
+    GLuint modelId;
+    GLuint lightId;
+
+    GLuint DiffuseId;
+    GLuint SpecularId;
+    GLuint HardnessId;
+    GLuint AlphaId;
+
     QMatrix4x4 proj;
     QMatrix4x4 view;
     QMatrix4x4 model;

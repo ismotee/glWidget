@@ -39,6 +39,7 @@
 ****************************************************************************/
 
 #include "glwidget.h"
+#include "material.h"
 #include <QMouseEvent>
 #include <QOpenGLShaderProgram>
 #include <QCoreApplication>
@@ -57,6 +58,8 @@ GLWidget::GLWidget(QWidget *parent)
       normalBuffer(QOpenGLBuffer::VertexBuffer),
       elementBuffer(QOpenGLBuffer::IndexBuffer)
 {
+    std::cout << "created GLWidget\n";
+
 /*
      m_core = QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"));
     // --transparent causes the clear color to be transparent. Therefore, on systems that
@@ -155,6 +158,9 @@ void GLWidget::initializeGL()
     // aboutToBeDestroyed() signal, instead of the destructor. The emission of
     // the signal will be followed by an invocation of initializeGL() where we
     // can recreate all resources.
+
+    std::cout << "Initialize GL ...";
+
     connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &GLWidget::cleanup);
 
     initializeOpenGLFunctions();
@@ -175,6 +181,11 @@ void GLWidget::initializeGL()
     viewId = m_program->uniformLocation("V");
     modelId = m_program->uniformLocation("M");
     lightId = m_program->uniformLocation("LightPosition_worldspace");
+
+    DiffuseId = m_program->uniformLocation("diffuseColor");
+    SpecularId = m_program->uniformLocation("specularity");
+    HardnessId = m_program->uniformLocation("hardness");
+    AlphaId = m_program->uniformLocation("alpha");
 
     // aspect ratio
     aspectRatio = 4/3;
@@ -214,15 +225,19 @@ void GLWidget::initializeGL()
     std::cout << "\n";
 
     setData(obj);
+
     // Store the vertex attribute bindings for the program.
-    setupVertexAttribs();
+    //setupVertexAttribs();
 
 
     // Light position is fixed.
     m_program->setUniformValue(lightId, QVector3D(11, 6, 11));
 
     m_program->release();
+
+    std::cout << "ok\n";
 }
+
 
 void GLWidget::setupVertexAttribs()
 {
@@ -241,6 +256,8 @@ void GLWidget::setupVertexAttribs()
 
 void GLWidget::paintGL()
 {
+    std::cout << "PaintGL ...";
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -259,11 +276,22 @@ void GLWidget::paintGL()
     m_program->setUniformValue(projId, proj);
     m_program->setUniformValue(mvpId, proj * view * QMatrix4x4()); // matrix default constructor represents model matrix
 
+    //testataan materiaali 0:lla
+    material M = getMaterial(0);
 
+    //m_program->setUniformValue(DiffuseId, M.diffuseColor);
+    m_program->setUniformValue(DiffuseId, QVector3D(M.diffuseColor.r, M.diffuseColor.g, M.diffuseColor.b));
+    m_program->setUniformValue(SpecularId, M.specularity);
+    m_program->setUniformValue(HardnessId, M.hardness);
+    m_program->setUniformValue(AlphaId, M.alpha);
+
+    setupVertexAttribs();
 
     glDrawElements(GL_TRIANGLES,elements_n,GL_UNSIGNED_INT,0);
 
     m_program->release();
+
+    std::cout << "ok\n";
 }
 
 void GLWidget::resizeGL(int w, int h)
