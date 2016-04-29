@@ -9,12 +9,11 @@ class dClock{
 public:
 	clock_t lastTime;
 
-    void reset() { /*lastTime = clock(); */}
+    void reset() { lastTime = clock(); }
 
 	float get() {
-/*		clock_t time = clock() - lastTime;
+        clock_t time = clock() - lastTime;
 		return ((float)time / CLOCKS_PER_SEC);
-        */
 	}
 
     bool delay(float target_fps) {/*
@@ -38,7 +37,7 @@ public:
     }
 
 	dClock(){
-    //	reset();
+        reset();
 	}
 
 };
