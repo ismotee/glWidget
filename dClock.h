@@ -1,21 +1,24 @@
 #ifndef DCLOCK_H
 #define DCLOCK_H
-/*
+
 #include <time.h>
-#include <SDL2/SDL.h>
+//#include <SDL2/SDL.h>
 
 class dClock{
 public:
-	clock_t lastTime;
+/*
+    clock_t lastTime;
+*/
+    void reset() {/* lastTime = clock(); */}
 
-	void reset() { lastTime = clock(); }
-
-	float get() {
+    float get() {/*
 		clock_t time = clock() - lastTime;
 		return ((float)time / CLOCKS_PER_SEC);
-	}
+        */
+        return 0;
+    }
 
-	bool delay(float target_fps) {
+    bool delay(float target_fps) {/*
 		int delay_ms = (1000 / target_fps) - get() * 1000;
 		reset();
 
@@ -27,6 +30,8 @@ public:
 		}
 
 		else return false; //if lag, return false
+        */
+        return true;
 	}
 
 	dClock(){
@@ -34,5 +39,5 @@ public:
 	}
 
 };
-*/
+
 #endif

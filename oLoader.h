@@ -1,7 +1,7 @@
 #ifndef opengltest_oLoader_h
 #define opengltest_oLoader_h
 
-#include "olento.h"
+#include <glm/glm.hpp>
 #include <vector>
 #include "dFace.h"
 

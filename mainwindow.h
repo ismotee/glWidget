@@ -42,6 +42,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "dobject.h"
 
 class MainWindow : public QMainWindow
 {
@@ -49,6 +50,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
+    dObject obj;
 
 private slots:
     void onAddNew();

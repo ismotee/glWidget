@@ -6,7 +6,7 @@
 //  Copyright (c) 2016 Ismo Torvinen. All rights reserved.
 //
 
-#include "olento.h"
+#include <glm/glm.hpp>
 #include <vector>
 
 #ifndef opengltest_dFace_h

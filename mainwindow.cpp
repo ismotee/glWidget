@@ -43,9 +43,12 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QMessageBox>
+#include <QCoreApplication>
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(): obj(QCoreApplication::applicationDirPath().toStdString() + "/olento_testi.obj")
 {
+
+
     QMenuBar *menuBar = new QMenuBar;
     QMenu *menuWindow = menuBar->addMenu(tr("&Window"));
     QAction *addNew = new QAction(menuWindow);
