@@ -47,6 +47,7 @@
 #include <QOpenGLBuffer>
 #include <QMatrix4x4>
 #include "logo.h"
+#include "dobject.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 
@@ -57,6 +58,8 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     GLWidget(QWidget *parent = 0);
     ~GLWidget();
+
+    void setData (dObject& obj);
 
     QSize minimumSizeHint() const Q_DECL_OVERRIDE;
     QSize sizeHint() const Q_DECL_OVERRIDE;
@@ -82,15 +85,22 @@ protected:
 private:
     void setupVertexAttribs();
 
-    bool m_core;
     int m_xRot;
     int m_yRot;
     int m_zRot;
     QPoint m_lastPos;
-    Logo m_logo;
+
+    //Logo m_logo;
     QOpenGLVertexArrayObject m_vao;
-    QOpenGLBuffer m_logoVbo;
+    QOpenGLBuffer vertexBuffer;
+    QOpenGLBuffer normalBuffer;
+    QOpenGLBuffer elementBuffer;
     QOpenGLShaderProgram *m_program;
+
+    int elements_n;
+
+    dObject obj;
+
     float aspectRatio;
     int mvpId;
     int projId;
@@ -100,7 +110,6 @@ private:
     QMatrix4x4 proj;
     QMatrix4x4 view;
     QMatrix4x4 model;
-    bool m_transparent;
 };
 
 #endif

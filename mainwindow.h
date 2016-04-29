@@ -50,7 +50,6 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
-    dObject obj;
 
 private slots:
     void onAddNew();

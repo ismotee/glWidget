@@ -51,9 +51,14 @@ GLWidget::GLWidget(QWidget *parent)
       m_xRot(0),
       m_yRot(0),
       m_zRot(0),
-      m_program(0)
+      m_program(0),
+      obj(QCoreApplication::applicationDirPath().toStdString() + "/olento_testi.obj"),
+      vertexBuffer(QOpenGLBuffer::VertexBuffer),
+      normalBuffer(QOpenGLBuffer::VertexBuffer),
+      elementBuffer(QOpenGLBuffer::IndexBuffer)
 {
-    m_core = QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"));
+/*
+     m_core = QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"));
     // --transparent causes the clear color to be transparent. Therefore, on systems that
     // support it, the widget will become transparent apart from the logo.
     m_transparent = QCoreApplication::arguments().contains(QStringLiteral("--transparent"));
@@ -62,6 +67,7 @@ GLWidget::GLWidget(QWidget *parent)
         fmt.setAlphaBufferSize(8);
         setFormat(fmt);
     }
+    */
 }
 
 GLWidget::~GLWidget()
@@ -120,10 +126,24 @@ void GLWidget::setZRotation(int angle)
 void GLWidget::cleanup()
 {
     makeCurrent();
-    m_logoVbo.destroy();
+    vertexBuffer.destroy();
+    normalBuffer.destroy();
+    elementBuffer.destroy();
     delete m_program;
     m_program = 0;
     doneCurrent();
+}
+
+void GLWidget::setData(dObject &obj) {
+    vertexBuffer.bind();
+    vertexBuffer.allocate(obj.getVertexData().data,obj.getVertexData().length);
+
+    normalBuffer.bind();
+    normalBuffer.allocate(obj.getNormalData().data,obj.getNormalData().length);
+
+    elementBuffer.bind();
+    elementBuffer.allocate(obj.getElementData().data,obj.getElementData().length);
+    elements_n = obj.elements.size();
 }
 
 void GLWidget::initializeGL()
@@ -138,7 +158,7 @@ void GLWidget::initializeGL()
     connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &GLWidget::cleanup);
 
     initializeOpenGLFunctions();
-    glClearColor(0, 0, 0, m_transparent ? 0 : 1);
+    glClearColor(0, 0, 0, 1);
 
     m_program = new QOpenGLShaderProgram;
 
@@ -185,13 +205,27 @@ void GLWidget::initializeGL()
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     // Setup our vertex buffer object.
-    m_logoVbo.create();
-    m_logoVbo.bind();
-    m_logoVbo.allocate(m_logo.constData(), m_logo.count() * sizeof(GLfloat));
+    vertexBuffer.create();
+    normalBuffer.create();
+    elementBuffer.create();
 
+    for(int i = 0; i < 100; i++)
+        std::cout << obj.elements[i] << ", ";
+    std::cout << "\n";
+
+    setData(obj);
     // Store the vertex attribute bindings for the program.
-    setupVertexAttribs();
+    //setupVertexAttribs();
+    vertexBuffer.bind();
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    vertexBuffer.release();
+
+    normalBuffer.bind();
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    normalBuffer.release();
 
     // Light position is fixed.
     m_program->setUniformValue(lightId, QVector3D(11, 6, 11));
@@ -201,13 +235,8 @@ void GLWidget::initializeGL()
 
 void GLWidget::setupVertexAttribs()
 {
-    m_logoVbo.bind();
-    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-    f->glEnableVertexAttribArray(0);
-    f->glEnableVertexAttribArray(1);
-    f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
-    f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
-    m_logoVbo.release();
+   // QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
 }
 
 void GLWidget::paintGL()
@@ -230,7 +259,9 @@ void GLWidget::paintGL()
     m_program->setUniformValue(projId, proj);
     m_program->setUniformValue(mvpId, proj * view * QMatrix4x4()); // matrix default constructor represents model matrix
 
-    glDrawArrays(GL_TRIANGLES, 0, m_logo.vertexCount());
+
+
+    glDrawElements(GL_TRIANGLES,elements_n,GL_UNSIGNED_INT,0);
 
     m_program->release();
 }
