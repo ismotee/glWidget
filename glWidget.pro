@@ -17,7 +17,6 @@ SOURCES += main.cpp\
     glwidget.cpp \
     logo.cpp \
     window.cpp \
-    shader.cpp \
     dobject.cpp \
     oLoader.cpp
 
@@ -25,7 +24,6 @@ HEADERS  += mainwindow.h \
     glwidget.h \
     logo.h \
     window.h \
-    shader.hpp \
     dClock.h \
     dFace.h \
     dobject.h \
@@ -35,4 +33,5 @@ FORMS    += mainwindow.ui
 
 DISTFILES += \
     StandardShading.fragmentshader \
-    StandardShading.vertexshader
+    StandardShading.vertexshader \
+    olento_testi.obj
