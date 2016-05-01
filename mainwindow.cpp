@@ -46,26 +46,44 @@
 #include <QCoreApplication>
 #include <iostream>
 
+using namespace std;
+
 MainWindow::MainWindow()
 {
-    std::cout << "MainWindow constructor ...";
+    cerr << "MainWindow constructor ...\n";
+    //cerr << "   create members";;
     QMenuBar *menuBar = new QMenuBar;
     QMenu *menuWindow = menuBar->addMenu(tr("&Window"));
     QAction *addNew = new QAction(menuWindow);
     addNew->setText(tr("Add new"));
     menuWindow->addAction(addNew);
+
+    //cerr << "   connect";
     connect(addNew, &QAction::triggered, this, &MainWindow::onAddNew);
     setMenuBar(menuBar);
 
-    onAddNew();
-
-    std::cout << "ok\n";
+    //cerr << "   onAddNew";
+    if(!onAddNew()) {
+        cerr << "\n   Couldn't add new window!\n";
+        cerr << "failed!\n";
+    }
+    else{
+        cerr << "MainWindow constructor ok\n";
+    }
 }
 
-void MainWindow::onAddNew()
+bool MainWindow::onAddNew()
 {
-    if (!centralWidget())
+    if (!centralWidget()) {
+        //cerr << "No central widget; create new window";
+        new Window(this);
+        //cerr << "Set central widget";
         setCentralWidget(new Window(this));
-    else
+    }
+    else{
+        cerr << "Cannot add new window";
         QMessageBox::information(0, tr("Cannot add new window"), tr("Already occupied. Undock first."));
+        return false;
+    }
+    return true;
 }

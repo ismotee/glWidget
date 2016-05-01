@@ -1,18 +1,17 @@
 #include "oLoader.h"
 #include <iostream>
-
+using namespace std;
 
 bool oLoader::loadOBJ(
 	std::string path,
 	std::vector<glm::vec3>& vertices)
 {
 
-	std::cout << "Loading OBJ file " << path.c_str() << "... ";
+    //std::cerr << "Loading OBJ file " << path.c_str() << "... ";
 
 	FILE * file = fopen(path.c_str(), "r");
 	if (file == NULL){
-		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		getchar();
+        //cerr << "Couldn't open file" << path.c_str() << endl;
 		return false;
 	}
 
@@ -41,10 +40,8 @@ bool oLoader::loadOBJ(
 	}
 
 
-	std::cout << "done!\n";
+    //std::cerr << "ok\n";
 	return true;
-
-
 }
 
 bool oLoader::loadOBJ(
@@ -54,12 +51,11 @@ bool oLoader::loadOBJ(
 	std::vector<dFace>& faces)
 {
 
-	//  std::cout << "Loading OBJ file " << path.c_str() << "...  " ;
+    //std::cout << "Loading OBJ file: " << path.c_str() << " ... " ;
 
-	FILE * file = fopen(path.c_str(), "r");
+    FILE * file = fopen(path.c_str(), "r");
 	if (file == NULL){
-		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		getchar();
+        //cerr << "\n   Couldn't open file!\nLoadOBJ failed\n";
 		return false;
 	}
 
@@ -87,8 +83,7 @@ bool oLoader::loadOBJ(
 			int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
 
 			if (matches != 6){
-
-				printf("File can't be read by our simple parser :-( Try exporting with other options\n");
+                //cerr << ("\n   Couldn't parse file!\nLoadOBJ failed\n");
 				return false;
 
 			}
@@ -111,7 +106,7 @@ bool oLoader::loadOBJ(
 			fgets(stupidBuffer, 1000, file);
 		}
 	}
-
+    //cerr << "ok\n";
 	return true;
 }
 

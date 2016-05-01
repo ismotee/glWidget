@@ -50,15 +50,21 @@
 #include <QApplication>
 #include <QMessageBox>
 
+using namespace std;
+
 Window::Window(MainWindow *mw)
     : mainWindow(mw)
 {
+    cerr << "Window constructor ...\n";
+    //cerr << "   create GLWidget";
     glWidget = new GLWidget;
 
+    //cerr << "   create sliders";
     xSlider = createSlider();
     ySlider = createSlider();
     zSlider = createSlider();
 
+    //cerr << "   connect";
     connect(xSlider, &QSlider::valueChanged, glWidget, &GLWidget::setXRotation);
     connect(glWidget, &GLWidget::xRotationChanged, xSlider, &QSlider::setValue);
     connect(ySlider, &QSlider::valueChanged, glWidget, &GLWidget::setYRotation);
@@ -66,6 +72,7 @@ Window::Window(MainWindow *mw)
     connect(zSlider, &QSlider::valueChanged, glWidget, &GLWidget::setZRotation);
     connect(glWidget, &GLWidget::zRotationChanged, zSlider, &QSlider::setValue);
 
+    //cerr << "   create layout and add widgets";
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QHBoxLayout *container = new QHBoxLayout;
     container->addWidget(glWidget);
@@ -80,13 +87,17 @@ Window::Window(MainWindow *mw)
     connect(dockBtn, &QPushButton::clicked, this, &Window::dockUndock);
     mainLayout->addWidget(dockBtn);
 
+    //cerr << "   set layout";
     setLayout(mainLayout);
 
+    //cerr << "   set slider values and title";
     xSlider->setValue(15 * 16);
     ySlider->setValue(345 * 16);
     zSlider->setValue(0 * 16);
 
     setWindowTitle(tr("Hello GL"));
+
+    cerr << "Window constructor ok\n";
 }
 
 QSlider *Window::createSlider()

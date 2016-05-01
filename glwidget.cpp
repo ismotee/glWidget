@@ -47,6 +47,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+using namespace std;
+
 GLWidget::GLWidget(QWidget *parent)
     : QOpenGLWidget(parent),
       m_xRot(0),
@@ -58,7 +60,7 @@ GLWidget::GLWidget(QWidget *parent)
       normalBuffer(QOpenGLBuffer::VertexBuffer),
       elementBuffer(QOpenGLBuffer::IndexBuffer)
 {
-    std::cout << "created GLWidget\n";
+    cerr << "GLWidget constructor called succesfully\n";
 
 /*
      m_core = QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"));
@@ -159,7 +161,7 @@ void GLWidget::initializeGL()
     // the signal will be followed by an invocation of initializeGL() where we
     // can recreate all resources.
 
-    std::cout << "Initialize GL ...";
+    std::cerr << "Initialize GL ...";
 
     connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &GLWidget::cleanup);
 
@@ -175,8 +177,9 @@ void GLWidget::initializeGL()
     m_program->bindAttributeLocation("vertexNormal_modelspace", 1);
 
     m_program->link();
-
     m_program->bind();
+
+
     mvpId = m_program->uniformLocation("MVP");
     viewId = m_program->uniformLocation("V");
     modelId = m_program->uniformLocation("M");
@@ -235,7 +238,7 @@ void GLWidget::initializeGL()
 
     m_program->release();
 
-    std::cout << "ok\n";
+    std::cerr << "ok\n";
 }
 
 
@@ -256,7 +259,7 @@ void GLWidget::setupVertexAttribs()
 
 void GLWidget::paintGL()
 {
-    std::cout << "PaintGL ...";
+    std::cerr << "PaintGL ...";
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -291,7 +294,7 @@ void GLWidget::paintGL()
 
     m_program->release();
 
-    std::cout << "ok\n";
+    std::cerr << "ok\n";
 }
 
 void GLWidget::resizeGL(int w, int h)

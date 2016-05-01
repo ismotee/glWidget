@@ -51,7 +51,7 @@ public:
     MainWindow();
 
 private slots:
-    void onAddNew();
+    bool onAddNew();
 };
 
 #endif

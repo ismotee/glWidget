@@ -41,9 +41,12 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QSurfaceFormat>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include <iostream>
+
+using namespace std;
 
 unsigned int createID() {
     static int n = 0;
@@ -53,13 +56,10 @@ unsigned int createID() {
 
 int main(int argc, char *argv[])
 {
-    std::cout << "create application... \n";
+    cerr << "Create application\n";
     QApplication app(argc, argv);
 
-    std::cout << "ok\n";
-
-    std::cout << "setup gl ... ";
-
+    cerr << "\nSet format\n";
     QSurfaceFormat fmt;
     fmt.setDepthBufferSize(24);
     if (QCoreApplication::arguments().contains(QStringLiteral("--multisample")))
@@ -70,8 +70,7 @@ int main(int argc, char *argv[])
 
     QSurfaceFormat::setDefaultFormat(fmt);
 
-    std::cout << "ok\n";
-
+    cerr << "\nCreate main window\n";
     MainWindow mainWindow; 
 
     if (QCoreApplication::arguments().contains(QStringLiteral("--transparent"))) {
@@ -83,11 +82,13 @@ int main(int argc, char *argv[])
     int desktopArea = QApplication::desktop()->width() *
                      QApplication::desktop()->height();
     int widgetArea = mainWindow.width() * mainWindow.height();
+
+    cerr << "\nShow\n";
     if (((float)widgetArea / (float)desktopArea) < 0.75f)
-
         mainWindow.show();
-    //else
+    else
         mainWindow.showMaximized();
-    return app.exec();
 
+    cerr << "\nRun application\n";
+    return app.exec();
 }
